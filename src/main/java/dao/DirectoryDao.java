@@ -12,14 +12,12 @@ import java.util.regex.Pattern;
 
 public class DirectoryDao {
 
+    Connection con = getConnection(loadProperties("./src/main/resources/app.properties"));
     public long timerInsert = 0L;
     public int countErr = 0;
 
     public void insertOrgsPS(Set<Org> orgs) {
         long time = System.currentTimeMillis();
-        Properties prop = loadProperties("./src/main/resources/app.properties");
-        Connection con = getConnection(prop);
-
         try (PreparedStatement ps = con.prepareStatement("insert into orgs(name, inn, ogrn, address, postcode, open_date)values (?, ?, ?, ?, ?, ?)")) {
             con.setAutoCommit(false);
             for (Org org : orgs) {
@@ -45,6 +43,14 @@ public class DirectoryDao {
             throwables.printStackTrace();
         }
         timerInsert += System.currentTimeMillis() - time;
+    }
+
+    public void connectClose() {
+        try {
+            con.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     private long parseErrorForGetInn(String str) {

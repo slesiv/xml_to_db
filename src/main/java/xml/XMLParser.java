@@ -33,6 +33,7 @@ public class XMLParser {
                 }
                 if (event == XMLStreamConstants.END_DOCUMENT) {
                     dao.insertOrgsPS(orgs);
+                    dao.connectClose();
                     System.out.println();
                     System.out.println("parse: " + timerParse + " ms");
                     System.out.println("insert into DB: " + dao.timerInsert + " ms");
